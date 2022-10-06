@@ -1,0 +1,35 @@
+{
+    "name": "@ride-saver/api",
+    "description": "The RideSaver API client for Node.js and the browser.",
+    "main": "build/index.js",
+    "files": [
+        "package.json",
+        "build/js",
+        "openapi.yaml",
+        "README.md",
+        "LICENSE"
+    ],
+    "author": {
+        "name": "Elias Schablowski",
+        "email": "eschabl@calstatela.edu"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/RideSaver/API"
+    },
+    "scripts": {
+        "prebuild": "openapi -i openapi.yaml -o build/ts -c axios",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@types/axios": "^0.14.0",
+        "@types/form-data": "^2.5.0",
+        "axios": "^1.1.0",
+        "form-data": "^4.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^18.8.3",
+        "openapi-typescript-codegen": "^0.23.0",
+        "typescript": "^4.8.4"
+    }
+}

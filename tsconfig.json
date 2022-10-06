@@ -1,0 +1,12 @@
+{
+    "include": ["build/ts/**/*.ts"],
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "declaration": true,
+        "esModuleInterop": true,
+        "target": "ES6",
+        "moduleResolution": "node",
+        "module": "ESNext",
+        "outDir": "build/js"
+    }
+}
