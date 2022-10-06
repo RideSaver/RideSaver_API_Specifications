@@ -16,7 +16,7 @@ jobs:
           node-version: 'lts/*'
           registry-url: 'https://npm.pkg.github.com'
           # Defaults to the user or organization that owns the workflow file
-          scope: '@octocat'
+          scope: '@ride-saver'
       - run: yarn install --frozen-lockfile
       - run: yarn build
       - run: npm publish
