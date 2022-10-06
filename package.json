@@ -1,5 +1,5 @@
 {
-    "name": "@ride-saver/api",
+    "name": "@RideSaver/api",
     "version": "0.0.1",
     "description": "The RideSaver API client for Node.js and the browser.",
     "main": "build/index.js",
