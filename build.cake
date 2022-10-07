@@ -13,15 +13,14 @@ Task("Clean")
     .WithCriteria(c => HasArgument("rebuild"))
     .Does(() =>
 {
-    CleanDirectory($"./src/RideSaver.Server/bin/{configuration}");
-    CleanDirectory($"./src");
+    CleanDirectory($"./build/csharp");
 });
 
 Task("GenerateOpenAPI")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    OpenApiGenerator.Generate("openapi.yaml", "aspnetcore", "./src", new OpenApiGenerateSettings()
+    OpenApiGenerator.Generate("openapi.yaml", "aspnetcore", "./build/csharp", new OpenApiGenerateSettings()
     {
         ConfigurationFile = "./openapi-codegen.json"
     });
@@ -31,7 +30,7 @@ Task("Build")
     .IsDependentOn("GenerateOpenAPI")
     .Does(() =>
 {
-    DotNetBuild("./src/RideSaver.Server.sln", new DotNetBuildSettings
+    DotNetBuild("./build/csharp/RideSaver.Server.sln", new DotNetBuildSettings
     {
         Configuration = configuration,
     });
