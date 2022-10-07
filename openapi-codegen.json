@@ -11,5 +11,5 @@
     "packageTitle": "RideSaver API Server framework",
     "useDefaultRouting": true,
     "withXml": true,
-    "newtonsoftVersion": "12.0.1"
+    "newtonsoftVersion": "13.0.1"
 }
