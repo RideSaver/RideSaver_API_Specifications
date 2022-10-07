@@ -1,4 +1,4 @@
-#addin nuget:?package=Cake.OpenApiGenerator&version=1.0.2
+#addin nuget:?package=Cake.CodeGen.OpenAPI&version=1.0.2
 
 var target = Argument("target", "Build");
 var configuration = Argument("configuration", "Release");
