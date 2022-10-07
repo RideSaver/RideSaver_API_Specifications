@@ -21,7 +21,7 @@ Task("GenerateOpenAPI")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    Cake.CodeGen.OpenApi.OpenApiGenerator.Generate(new Cake.CodeGen.OpenApi.OpenApiGeneratorGenerateSettings()
+    OpenApiGenerator.Generate(new OpenApiGenerateSettings()
     {
         Specification = "openapi.yaml",
         Generator = "aspnetcore",
