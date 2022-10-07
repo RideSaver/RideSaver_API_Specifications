@@ -21,11 +21,9 @@ Task("GenerateOpenAPI")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    OpenApiGenerator.Generate(new OpenApiGenerateSettings()
+    OpenApiGenerator.Generate("openapi.yaml", "aspnetcore", "./src", new OpenApiGenerateSettings()
     {
-        Specification = "openapi.yaml",
-        Generator = "aspnetcore",
-        OutputDirectory = "./src"
+        ConfigurationFile = "./openapi-codegen.json"
     });
 });
 
