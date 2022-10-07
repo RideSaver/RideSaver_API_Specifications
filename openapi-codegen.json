@@ -10,5 +10,6 @@
     "licenseName": "GPLv3",
     "packageTitle": "RideSaver API Server framework",
     "useDefaultRouting": true,
-    "withXml": true
+    "withXml": true,
+    "newtonsoftVersion": "12.0.1"
 }
