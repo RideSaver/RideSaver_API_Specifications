@@ -1,5 +1,6 @@
 #addin nuget:?package=Cake.CodeGen.OpenAPI&version=1.0.2
 using Cake.CodeGen.OpenApi;
+using Cake.Common.Tools.NuGet.Pack;
 
 
 var target = Argument("target", "Bundle");
@@ -55,9 +56,9 @@ Task("Bundle")
     .IsDependentOn("Test")
     .Does(() => 
 {
-    NuGet.Pack($"{output_dir}/src/{packageName}/{packageName}.nuspec", new NuGetPackSettings{
+    NuGetPacker.Pack($"{output_dir}/src/{packageName}/{packageName}.nuspec", new NuGetPackSettings{
         Files = new [] {
-            new NuSpecContent {Source = $"{ouput_dir}/{packageName}/bin/{configuration}/net6.0/TestNuGet.dll", Target = "bin"},
+            new NuSpecContent {Source = $"{output_dir}/{packageName}/bin/{configuration}/net6.0/TestNuGet.dll", Target = "bin"},
         },
     });
 });
