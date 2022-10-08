@@ -56,7 +56,7 @@ Task("Bundle")
     .IsDependentOn("Test")
     .Does(() => 
 {
-    NuGetPacker.Pack($"{output_dir}/src/{packageName}/{packageName}.nuspec", new NuGetPackSettings{
+    NuGetPacker.Pack($"{output_dir}/src/{packageName}/{packageName}.nuspec", new NuGetPackSettings() {
         Files = new [] {
             new NuSpecContent {Source = $"{output_dir}/{packageName}/bin/{configuration}/net6.0/TestNuGet.dll", Target = "bin"},
         },
