@@ -21,7 +21,7 @@ jobs:
             - run: dotnet new tool-manifest
             - run: dotnet tool install Cake.Tool --version 2.2.0
 
-            - run: dotnet cake
+            - run: dotnet cake --target=Bundle
             # Publish
             - name: publish on version change
               run: dotnet nuget push */bin/Release/*.nupkg

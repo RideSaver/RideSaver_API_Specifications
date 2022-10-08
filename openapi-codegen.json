@@ -4,12 +4,13 @@
     "packageGuid": "87e352ba-4083-45c1-a3f3-c667db1170de",
     "packageAuthors": "RideSaver",
     "buildTarget": "library",
-    "aspnetCoreVersion": "5.0",
+    "aspnetCoreVersion": "6.0",
     "isLibrary": true,
     "packageCopyright": "GPLv3",
     "licenseName": "GPLv3",
     "packageTitle": "RideSaver API Server framework",
     "useDefaultRouting": true,
     "withXml": true,
-    "newtonsoftVersion": "13.0.1"
+    "newtonsoftVersion": "6.0.9",
+    "swashbuckleVersion": "6.4.0"
 }
