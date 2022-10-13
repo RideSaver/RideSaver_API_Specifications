@@ -1,3 +1,5 @@
+
+#tool nuget:?package=NuGet.CommandLine&version=5.9.1
 #addin nuget:?package=Cake.CodeGen.OpenAPI&version=1.0.2
 using Cake.CodeGen.OpenApi;
 using Cake.Common.Tools.NuGet.NuGetAliases;
@@ -38,6 +40,9 @@ Task("Build")
     DotNetBuild($"{output_dir}/{packageName}.sln", new DotNetBuildSettings
     {
         Configuration = configuration,
+        Framework = "net6.0",
+        OutputDirectory = $"./build/{generator}/src/{packageName}/bin/{configuration}/lib/net6.0",
+        NoDependencies = false,
     });
 });
 
@@ -56,12 +61,23 @@ Task("Bundle")
     .IsDependentOn("Test")
     .Does(() => 
 {
-    NuGetPack($"{output_dir}/src/{packageName}/{packageName}.nuspec", new NuGetPackSettings() {
-        Files = new [] {
-            new NuSpecContent {Source = $"{output_dir}/{packageName}/bin/{configuration}/net6.0/TestNuGet.dll", Target = "bin"},
+    var nuGetPackSettings = new NuGetPackSettings {
+        Id = "RideSaver",
+        Version = "0.0.0.1",
+        Description = "Initial Build of RideSaver API",
+        Authors = new[] { "Elias, John"},
+        Files = new[] {
+            new NuSpecContent { Source = $"./net6.0/{packageName}.dll", Target = "lib/net6.0"},  
         },
-    });
+        Dependencies = new[] {
+            new NuSpecDependency { TargetFramework = "net6.0" },
+        },
+        BasePath = $"{output_dir}/src/{packageName}/bin/{configuration}/lib"
+        };
+
+    NuGetPack($"{output_dir}/src/{packageName}/{packageName}.nuspec", nuGetPackSettings);
 });
+
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION

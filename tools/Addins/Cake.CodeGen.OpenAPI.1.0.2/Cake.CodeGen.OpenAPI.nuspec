@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Cake.CodeGen.OpenAPI</id>
+    <version>1.0.2</version>
+    <authors>Lukas Körfer</authors>
+    <owners>Lukas Körfer</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <projectUrl>https://github.com/lukoerfer/cake-codegen-openapi</projectUrl>
+    <iconUrl>https://cdn.rawgit.com/cake-contrib/graphics/a5cf0f881c390650144b2243ae551d5b9f836196/png/cake-contrib-medium.png</iconUrl>
+    <description>Cake Addin for code generation via the OpenAPI Generator (f.k.a. Swagger Codegen)</description>
+    <tags>cake code-generation openapi</tags>
+    <repository type="git" url="https://github.com/lukoerfer/cake-codegen-openapi.git" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Cake.Http" version="0.6.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
