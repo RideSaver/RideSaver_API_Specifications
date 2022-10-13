@@ -14,6 +14,8 @@ jobs:
         runs-on: windows-latest
         steps:
             - uses: actions/checkout@v2
+              with:
+                ref: ${{ inputs.branch }}
 
             - name: Setup dotnet
               uses: actions/setup-dotnet@v1
@@ -29,4 +31,4 @@ jobs:
             - run: dotnet cake --target=Bundle
             # Publish
             - name: publish on version change
-              run: dotnet nuget push */bin/Release/*.nupkg
+              run: dotnet nuget push build/nuget/*.nupkg
