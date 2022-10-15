@@ -1,2 +1,9 @@
+# Language Agnostic Ignores
 /build
+
+# NPM Ignores
 node_modules
+
+# C# Ignores
+/tools
+/.config
