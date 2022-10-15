@@ -63,7 +63,7 @@ Task("Bundle")
     .Does(() => 
 {
     var nuGetPackSettings = new NuGetPackSettings {
-        Id = "RideSaver",
+        Id = "RideSaver.Server",
         Version = "0.0.0.1",
         Description = "Initial Build of RideSaver API",
         Authors = new[] { "Elias, John"},
