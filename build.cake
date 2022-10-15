@@ -1,5 +1,5 @@
-
 #tool nuget:?package=NuGet.CommandLine&version=5.9.1
+#addin nuget:?package=Cake.Git&version=2.0.0
 #addin nuget:?package=Cake.CodeGen.OpenAPI&version=1.0.2
 using Cake.CodeGen.OpenApi;
 using Cake.Common.Tools.NuGet.NuGetAliases;
@@ -74,7 +74,12 @@ Task("Bundle")
             new NuSpecDependency { TargetFramework = "net6.0" },
         },
         BasePath = $"{output_dir}/src/{packageName}/bin/{configuration}/lib",
-        OutputDirectory = $"{output_dir}/nuget"
+        OutputDirectory = $"{output_dir}/nuget",
+        Repository = new NuSpecRepository {
+            Type = "Git",
+            Branch = GitBranchCurrent("."),
+            Url = "https://github.com/RideSaver/RideSaver_API_Specification"
+        }
     };
 
     NuGetPack($"{output_dir}/src/{packageName}/{packageName}.nuspec", nuGetPackSettings);
