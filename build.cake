@@ -75,7 +75,7 @@ Task("Bundle")
         },
         BasePath = $"{output_dir}/src/{packageName}/bin/{configuration}/lib",
         OutputDirectory = $"{output_dir}/nuget",
-        Repository = new NuSpecRepository {
+        Repository = new NuGetRepository {
             Type = "Git",
             Branch = GitBranchCurrent("."),
             Url = "https://github.com/RideSaver/RideSaver_API_Specification"
