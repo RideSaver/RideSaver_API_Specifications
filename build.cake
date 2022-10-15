@@ -78,7 +78,7 @@ Task("Bundle")
         Repository = new NuGetRepository {
             Type = "Git",
             Branch = GitBranchCurrent(".").CanonicalName,
-            Url = GitBranchCurrent(".").Repositories.First().Url
+            Url = GitBranchCurrent(".").Remotes.First().Url
         }
     };
 
