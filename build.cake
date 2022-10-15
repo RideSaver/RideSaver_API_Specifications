@@ -73,8 +73,9 @@ Task("Bundle")
         Dependencies = new[] {
             new NuSpecDependency { TargetFramework = "net6.0" },
         },
-        BasePath = $"{output_dir}/src/{packageName}/bin/{configuration}/lib"
-        };
+        BasePath = $"{output_dir}/src/{packageName}/bin/{configuration}/lib",
+        OutputDirectory = $"{output_dir}/nuget"
+    };
 
     NuGetPack($"{output_dir}/src/{packageName}/{packageName}.nuspec", nuGetPackSettings);
 });

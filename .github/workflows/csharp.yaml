@@ -1,4 +1,4 @@
-name: publish to nuget
+name: Publish NuGet packages
 on:
     release:
         types: [created]
@@ -30,4 +30,4 @@ jobs:
             - name: add GitHub source
               run: nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/RideSaver/index.json" -UserName ${{github.actor}} -Password ${{secrets.GITHUB_TOKEN}} -StorePasswordInClearText
             - name: publish on version change
-              run: dotnet nuget push "build/nuget/**/*.nupkg" --source GitHub
+              run: dotnet nuget push "build/nuget/*.nupkg" --source GitHub
