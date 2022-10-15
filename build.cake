@@ -77,8 +77,8 @@ Task("Bundle")
         OutputDirectory = $"{output_dir}/nuget",
         Repository = new NuGetRepository {
             Type = "Git",
-            Branch = GitBranchCurrent("."),
-            Url = "https://github.com/RideSaver/RideSaver_API_Specification"
+            Branch = GitBranchCurrent(".").CanonicalName,
+            Url = GitBranchCurrent(".").Repositories.First().Url
         }
     };
 
