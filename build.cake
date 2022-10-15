@@ -29,7 +29,8 @@ Task("GenerateOpenAPI")
     OpenApiGenerator.Generate("openapi.yaml", generator, $"{output_dir}", new OpenApiGenerateSettings()
     {
         ConfigurationFile = "./openapi-codegen.json",
-        PackageName = packageName
+        PackageName = packageName,
+        TemplateDirectory = "./templates/csharp"
     });
 });
 
