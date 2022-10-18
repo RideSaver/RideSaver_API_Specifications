@@ -70,7 +70,6 @@ Task("Bundle")
     } else {
         version = version.Substring(1, version.Length - 1);
     }
-    Console.WriteLine(version);
     
     var nuGetPackSettings = new NuGetPackSettings {
         Id = "RideSaver.Server",
