@@ -3,6 +3,7 @@
 #addin nuget:?package=Cake.CodeGen.OpenAPI&version=1.0.2
 using Cake.CodeGen.OpenApi;
 using Cake.Common.Tools.NuGet.NuGetAliases;
+using System.Text.RegularExpressions;
 
 
 var target = Argument("target", "Bundle");
@@ -62,11 +63,19 @@ Task("Bundle")
     .IsDependentOn("Test")
     .Does(() => 
 {
+    string version = GitTags(".", loadTargets: true).Last().FriendlyName;
+
+    if(String.IsNullOrEmpty(version) || !(new Regex(@"v\d+\.\d+\.\d+", RegexOptions.Compiled | RegexOptions.IgnoreCase).IsMatch(version))){
+        version = DateTime.Now.ToString("yyyy.mm.dd.hh", System.Globalization.CultureInfo.InvariantCulture);
+    } else {
+        version = version.Substring(1, version.Length - 1);
+    }
+    
     var nuGetPackSettings = new NuGetPackSettings {
         Id = "RideSaver.Server",
-        Version = "0.0.0.1",
+        Version = version,
         Description = "Initial Build of RideSaver API",
-        Authors = new[] { "Elias, John"},
+        Authors = new[] {"Elias", "John"},
         Files = new[] {
             new NuSpecContent { Source = $"./net6.0/{packageName}.dll", Target = "lib/net6.0"},  
         },
