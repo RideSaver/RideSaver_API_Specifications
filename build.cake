@@ -43,7 +43,6 @@ Task("Build")
         Configuration = configuration,
         Framework = "net6.0",
         OutputDirectory = $"./build/{generator}/src/{packageName}/bin/{configuration}/lib/net6.0",
-        NoDependencies = false,
     });
 });
 
@@ -64,15 +63,15 @@ Task("Bundle")
 {
     var nuGetPackSettings = new NuGetPackSettings {
         Id = "RideSaver.Server",
-        Version = "0.0.0.1",
+        Version = "0.0.1.3",
         Description = "Initial Build of RideSaver API",
         Authors = new[] { "Elias, John"},
         Files = new[] {
             new NuSpecContent { Source = $"./net6.0/{packageName}.dll", Target = "lib/net6.0"},  
         },
-        Dependencies = new[] {
+        /*Dependencies = new[] {
             new NuSpecDependency { TargetFramework = "net6.0" },
-        },
+        },*/
         BasePath = $"{output_dir}/src/{packageName}/bin/{configuration}/lib",
         OutputDirectory = $"{output_dir}/nuget",
         Repository = new NuGetRepository {
