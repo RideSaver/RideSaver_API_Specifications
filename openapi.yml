@@ -11,6 +11,10 @@ tags:
       description: Get location information (geocoding and autocomplete)
     - name: user
       description: Get user information.
+    - name: request
+      description: Request rides for a user.
+    - name: services
+      description: Get general information on supported rideshare services.
 paths:
     /estimates:
         get:
@@ -111,6 +115,8 @@ paths:
                     description: The requested estimate does not exist.
     /services:
         get:
+            tags:
+              - services
             description: Get the supported services.
             operationId: getServices
             parameters:
@@ -195,6 +201,20 @@ paths:
             description: Login User to the account.
             tags:
                 - user
+            requestBody:
+                description: The login information.
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                    description: The username of the user wishing to log in.
+                                password:
+                                    type: string
+                                    description: The password of the user wishing to log in.
             responses:
                 "200":
                     description: OK
@@ -203,13 +223,15 @@ paths:
                             schema:
                                 type: string
                                 description: The token to use for future requests
+                "401":
+                    description: Username or password is invalid.
     /user/info/{username}:
         parameters:
-          - name: username
-            in: path
-            required: true
-            schema:
-                type: string
+            - name: username
+              in: path
+              required: true
+              schema:
+                  type: string
         get:
             security:
                 - oAuthPassword:
@@ -239,12 +261,12 @@ paths:
                 description: The information for the user wishing to register.
                 required: true
                 content:
-                  application/json:
-                    schema:
-                        $ref: "#/components/schemas/User"
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/User"
             responses:
-              "200":
-                description: OK
+                "200":
+                    description: OK
         delete:
             security:
                 - oAuthPassword:
@@ -255,8 +277,8 @@ paths:
             tags:
                 - user
             responses:
-              "200":
-                description: OK
+                "200":
+                    description: OK
     /user/signup:
         post:
             operationId: signUp
@@ -267,13 +289,65 @@ paths:
                 description: The information for the user wishing to register.
                 required: true
                 content:
-                  application/json:
-                    schema:
-                        $ref: "#/components/schemas/User"
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/User"
             responses:
-              "200":
-                description: OK
-    
+                "200":
+                    description: OK
+    /rides/request/{estimateId}:
+        parameters:
+            - name: estimateId
+              in: path
+              description: The ID of the estimate (from /estimates) that should be requested.
+              schema:
+                  type: string
+        post:
+            tags:
+                - request
+            responses:
+                "200":
+                    description: The ride request was successful
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Ride"
+    /rides/{rideId}:
+        parameters:
+            - name: rideId
+              in: path
+              description: The ID of the ride that is being referenced.
+              schema:
+                  type: string
+        delete:
+            tags:
+                - request
+            responses:
+                "200":
+                    description: The ride request was successfully cancelled.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    price:
+                                        type: number
+                                        description: The cancellation fee of the ride.
+                                    currency:
+                                        type: string
+                                        pattern: \s{3}
+                                        description: The ISO 4217 currency code for the currency that the cancellation fee is in.
+        get:
+            tags:
+                - request
+            responses:
+                "200":
+                    description: The ride request update.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Ride"
+
 components:
     parameters:
         location:
@@ -328,33 +402,6 @@ components:
                 - displayName
                 - seats
                 - requestURL
-        Location:
-            type: object
-            properties:
-                latitude:
-                    type: number
-                    minimum: -180
-                    maximum: 180
-                    description: The latitude of this location, - is south, + is north
-                longitude:
-                    type: number
-                    minimum: -180
-                    maximum: 180
-                    description: The longitude of this location, - is west, + is east
-                height:
-                    type: number
-                    minimum: 0
-                    description: The height of the given location, from the center of the planet, defaults to sea level.
-                planet:
-                    type: string
-                    default: earth
-                    pattern: "[^A-Z]"
-                    description: The name (lowercase) of the planet this location is on, currently only earth is supported and the default
-                    xml:
-                        attribute: true
-            required:
-                - latitude
-                - longitude
         RideService:
             type: object
             properties:
@@ -389,6 +436,83 @@ components:
                     items:
                         type: string
                         format: uuid
+        Location:
+            type: object
+            properties:
+                latitude:
+                    type: number
+                    minimum: -180
+                    maximum: 180
+                    description: The latitude of this location, - is south, + is north
+                longitude:
+                    type: number
+                    minimum: -180
+                    maximum: 180
+                    description: The longitude of this location, - is west, + is east
+                height:
+                    type: number
+                    minimum: 0
+                    description: The height of the given location, from the center of the planet, defaults to sea level.
+                planet:
+                    type: string
+                    default: earth
+                    pattern: "[^A-Z]"
+                    description: The name (lowercase) of the planet this location is on, currently only earth is supported and the default
+                    xml:
+                        attribute: true
+            required:
+                - latitude
+                - longitude
+        Ride:
+            type: object
+            properties:
+                stage:
+                    type: string
+                    enum:
+                        - scheduled
+                        - pending
+                        - accepted
+                        - cancelled
+                        - completed
+                id:
+                    type: string
+                    format: uuid
+                    description: The UUID that is used to reference this specific ride request.
+                estimatedTimeOfArrival:
+                    type: string
+                    format: date-time
+                    description: The Estimated time of arrival for the driver to the rider or to the destination.
+                riderOnBoard:
+                    type: boolean
+                    description: Whether the rider is in the car.
+                price:
+                    type: number
+                    description: The final price of the ride.
+                currency:
+                    type: string
+                    pattern: \s{3}
+                    description: The ISO 4217 currency code for the currency that the price is in.
+                driver:
+                    $ref: "#/components/schemas/Driver"
+                    description: The driver and car information that accepted the ride.
+                driverLocation:
+                    $ref: "#/components/schemas/Location"
+                    description: The current location of the driver (or car).
+        Driver:
+            type: object
+            properties:
+                displayName:
+                    type: string
+                licensePlate:
+                    type: string
+                carPicture:
+                    type: string
+                    format: uri
+                carDescription:
+                    type: string
+                driverPronounciation:
+                    type: string
+
     securitySchemes:
         oAuthPassword:
             type: oauth2
