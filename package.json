@@ -23,7 +23,7 @@
         "registry": "https://npm.pkg.github.com"
     },
     "scripts": {
-        "prebuild": "openapi -i openapi.yml -o build/ts -c axios",
+        "prebuild": "openapi -i openapi.yaml -o build/ts -c axios",
         "build": "tsc",
         "build:redux": "npx @rtk-query/codegen-openapi ./redux-toolkit/openapi-config.ts"
     },
