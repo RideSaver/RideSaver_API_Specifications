@@ -226,11 +226,11 @@ paths:
               schema:
                   type: string
         get:
+            operationId: getUser
             security:
                 - oAuthPassword:
                       - read_user_info
                 - bearer: []
-            operationId: getUser
             description: Read user information, i.e.
             tags:
                 - user
@@ -242,11 +242,11 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/User"
         patch:
+            operationId: patchUser
             security:
                 - oAuthPassword:
                       - update_user_info
                 - bearer: []
-            operationId: patchUser
             description: Update user information
             tags:
                 - user
@@ -263,11 +263,11 @@ paths:
                 "200":
                     description: OK
         delete:
+            operationId: deleteUser
             security:
                 - oAuthPassword:
                       - update_user_info
                 - bearer: []
-            operationId: deleteUser
             description: Delete the specified user.
             tags:
                 - user
@@ -292,6 +292,31 @@ paths:
             responses:
                 "200":
                     description: OK
+    /user/{userId}/rideHistory:
+        parameters:
+            - name: username
+              in: path
+              required: true
+              schema:
+                  type: string
+        get:
+            operationId: getHistory
+            description: Get the users ride history.
+            tags:
+                - user
+            security:
+                - oAuthPassword:
+                      - read_user_history
+                - bearer: []
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Ride"
     /rides/request/{estimateId}:
         parameters:
             - name: estimateId
@@ -299,9 +324,15 @@ paths:
               description: The ID of the estimate (from /estimates) that should be requested.
               schema:
                   type: string
+              required: true
         post:
+            operationId: requestRide
             tags:
                 - request
+            security:
+                - oAuthPassword:
+                      - request_rides
+                - bearer: []
             responses:
                 "200":
                     description: The ride request was successful
@@ -316,9 +347,15 @@ paths:
               description: The ID of the ride that is being referenced.
               schema:
                   type: string
+              required: true
         delete:
+            operationId: cancelRide
             tags:
                 - request
+            security:
+                - oAuthPassword:
+                      - request_rides
+                - bearer: []
             responses:
                 "200":
                     description: The ride request was successfully cancelled.
@@ -327,8 +364,13 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/PriceWithCurrency"
         get:
+            operationId: getRide
             tags:
                 - request
+            security:
+                - oAuthPassword:
+                      - read_user_history
+                - bearer: []
             responses:
                 "200":
                     description: The ride request update.
@@ -547,6 +589,8 @@ components:
                         create_requests: Request rides for the user.
                         read_user_info: Read user information.
                         update_user_info: Update user information.
+                        read_user_history: Read user ride history.
+                        request_rides: Request rides on the users behalf.
         bearer:
             type: http
             scheme: bearer
