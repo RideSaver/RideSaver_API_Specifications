@@ -1,7 +1,7 @@
 import type { ConfigFile } from '@rtk-query/codegen-openapi'
 
 const config: ConfigFile = {
-    schemaFile: '../openapi.yml',
+    schemaFile: '../openapi.yaml',
     apiFile: './emptyApi.ts',
     apiImport: 'emptySplitApi',
     outputFile: '../build/ts/redux.ts',
