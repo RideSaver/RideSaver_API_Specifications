@@ -328,15 +328,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    price:
-                                        type: number
-                                        description: The cancellation fee of the ride.
-                                    currency:
-                                        type: string
-                                        pattern: \s{3}
-                                        description: The ISO 4217 currency code for the currency that the cancellation fee is in.
+                                $ref: "#/components/schemas/PriceWithCurrency"
         get:
             tags:
                 - request
@@ -373,9 +365,7 @@ components:
                     format: date-time
                     description: The time at which the validity of this estimate expires (and should be refreshed before)
                 price:
-                    type: integer
-                    minimum: 0
-                    description: The estimated price of this ride, in user currency.
+                    $ref: "#/components/schemas/PriceWithCurrency"
                 distance:
                     type: integer
                     minimum: 0
@@ -486,12 +476,7 @@ components:
                     type: boolean
                     description: Whether the rider is in the car.
                 price:
-                    type: number
-                    description: The final price of the ride.
-                currency:
-                    type: string
-                    pattern: \s{3}
-                    description: The ISO 4217 currency code for the currency that the price is in.
+                    $ref: "#/components/schemas/PriceWithCurrency"
                 driver:
                     $ref: "#/components/schemas/Driver"
                     description: The driver and car information that accepted the ride.
@@ -512,7 +497,16 @@ components:
                     type: string
                 driverPronounciation:
                     type: string
-
+        PriceWithCurrency:
+            type: object
+            properties:
+                price:
+                    type: number
+                    description: The cancellation fee of the ride.
+                currency:
+                    type: string
+                    pattern: \s{3}
+                    description: The ISO 4217 currency code for the currency that the cancellation fee is in.
     securitySchemes:
         oAuthPassword:
             type: oauth2

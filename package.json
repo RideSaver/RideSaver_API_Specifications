@@ -2,7 +2,7 @@
     "name": "@RideSaver/api",
     "version": "0.0.1",
     "description": "The RideSaver API client for Node.js and the browser.",
-    "main": "build/index.js",
+    "main": "build/js/index.js",
     "files": [
         "package.json",
         "build/js",
@@ -29,8 +29,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.9.0",
-        "@types/axios": "^0.14.0",
-        "@types/form-data": "^2.5.0",
         "axios": "^1.1.3",
         "form-data": "^4.0.0"
     },
