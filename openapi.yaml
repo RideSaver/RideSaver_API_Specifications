@@ -116,7 +116,7 @@ paths:
     /services:
         get:
             tags:
-              - services
+                - services
             description: Get the supported services.
             operationId: getServices
             parameters:
@@ -207,14 +207,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            type: object
-                            properties:
-                                username:
-                                    type: string
-                                    description: The username of the user wishing to log in.
-                                password:
-                                    type: string
-                                    description: The password of the user wishing to log in.
+                            $ref: "#/components/schemas/UserLogin"
             responses:
                 "200":
                     description: OK
@@ -263,7 +256,9 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/User"
+                            allOf:
+                                - $ref: "#/components/schemas/User"
+                                - $ref: "#/components/schemas/UserLogin"
             responses:
                 "200":
                     description: OK
@@ -291,7 +286,9 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/User"
+                            allOf:
+                                - $ref: "#/components/schemas/User"
+                                - $ref: "#/components/schemas/UserLogin"
             responses:
                 "200":
                     description: OK
@@ -421,11 +418,24 @@ components:
                     format: email
                 name:
                     type: string
+                phone_number:
+                    type: string
+                    format: telephone
                 authorized_services:
                     type: array
                     items:
                         type: string
                         format: uuid
+        UserLogin:
+            description: User Login information
+            type: object
+            properties:
+                username:
+                    description: The users username
+                    type: string
+                password:
+                    description: The users password
+                    type: string
         Location:
             type: object
             properties:
