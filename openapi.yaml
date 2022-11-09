@@ -400,6 +400,16 @@ components:
                     type: string
                     format: uuid
                     description: The unique ID for this ride service, stays the same even if the name changes.
+                features:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - driverless
+                            - accept-cash
+                            - shared
+                            - professional
+                            - electric
                 security:
                     title: authorization_method
                     type: object
