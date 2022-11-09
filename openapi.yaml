@@ -426,6 +426,9 @@ components:
                     items:
                         type: string
                         format: uuid
+                avatar:
+                    type: string
+                    format: uri
         UserLogin:
             description: User Login information
             type: object
@@ -507,6 +510,9 @@ components:
                     type: string
                 driverPronounciation:
                     type: string
+                avatar:
+                    type: string
+                    format: uri
         PriceWithCurrency:
             type: object
             properties:
