@@ -317,6 +317,44 @@ paths:
                                 type: array
                                 items:
                                     $ref: "#/components/schemas/Ride"
+    /user/{username}/avatar:
+        parameters:
+            - name: username
+              in: path
+              required: true
+              schema:
+                  type: string
+        get:
+            operationId: getAvatar
+            security:
+                - oAuthPassword:
+                      - read_user_info
+                - bearer: []
+            description: Read user information, i.e.
+            tags:
+                - user
+            responses:
+                "200":
+                    description: OK
+        post:
+            operationId: updateAvatar
+            security:
+                - oAuthPassword:
+                      - update_user_info
+                - bearer: []
+            description: Delete the specified user.
+            tags:
+                - user
+            requestBody:
+                content:
+                    image/png:
+                        schema:
+                            type: string
+                            format: binary
+            responses:
+                "200":
+                    description: OK
+
     /rides/request/{estimateId}:
         parameters:
             - name: estimateId
@@ -508,9 +546,6 @@ components:
                     items:
                         type: string
                         format: uuid
-                avatar:
-                    type: string
-                    format: uri
         UserLogin:
             description: User Login information
             type: object
