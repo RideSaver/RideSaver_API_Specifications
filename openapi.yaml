@@ -292,7 +292,7 @@ paths:
             responses:
                 "200":
                     description: OK
-    /user/{userId}/rideHistory:
+    /user/{username}/rideHistory:
         parameters:
             - name: username
               in: path
@@ -378,12 +378,24 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/Ride"
-
+    /providers:
+        get:
+            operationId: getProviders
+            description: Get all of the supported service providers.
+            tags:
+                - services
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        "application/json":
+                            schema:
+                                $ref: "#/components/schemas/ServiceProvider"
 components:
     parameters:
         location:
             name: location
-            in: header
+            in: query
             explode: true
             required: false
             description: The location at which services are supported (usually by country/city range), leaving this empty returns all supported services worldwide.
@@ -452,6 +464,21 @@ components:
                             - shared
                             - professional
                             - electric
+                provider:
+                    description: The provider of this service, references ServiceProvider
+                    type: string
+                    format: uuid
+        ServiceProvider:
+            type: object
+            properties:
+                displayName:
+                    example: uber
+                    type: string
+                    description: The name to display for this service provider.
+                id:
+                    type: string
+                    format: uuid
+                    description: The unique ID for this ride service provider, stays the same even if the name changes.
                 security:
                     title: authorization_method
                     type: object
@@ -461,6 +488,9 @@ components:
                             enum:
                                 - oauth
                                 - none
+                        authorization_url:
+                            description: The OAuth2.0 authorization URL.
+                            type: string
         User:
             description: User information object.
             type: object
