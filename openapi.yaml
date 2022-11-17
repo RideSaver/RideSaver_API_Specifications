@@ -383,7 +383,7 @@ components:
     parameters:
         location:
             name: location
-            in: header
+            in: query
             explode: true
             required: false
             description: The location at which services are supported (usually by country/city range), leaving this empty returns all supported services worldwide.
