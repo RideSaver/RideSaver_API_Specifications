@@ -294,7 +294,8 @@ paths:
                     description: OK
     /user/{userId}/rideHistory:
         parameters:
-            - name: username
+            - name: userId
+              description: The ID of the user that requested the ride history.
               in: path
               required: true
               schema:
