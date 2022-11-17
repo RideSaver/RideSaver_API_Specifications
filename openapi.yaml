@@ -116,7 +116,7 @@ paths:
     /services:
         get:
             tags:
-              - services
+                - services
             description: Get the supported services.
             operationId: getServices
             parameters:
@@ -207,14 +207,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            type: object
-                            properties:
-                                username:
-                                    type: string
-                                    description: The username of the user wishing to log in.
-                                password:
-                                    type: string
-                                    description: The password of the user wishing to log in.
+                            $ref: "#/components/schemas/UserLogin"
             responses:
                 "200":
                     description: OK
@@ -233,11 +226,11 @@ paths:
               schema:
                   type: string
         get:
+            operationId: getUser
             security:
                 - oAuthPassword:
                       - read_user_info
                 - bearer: []
-            operationId: getUser
             description: Read user information, i.e.
             tags:
                 - user
@@ -249,11 +242,11 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/User"
         patch:
+            operationId: patchUser
             security:
                 - oAuthPassword:
                       - update_user_info
                 - bearer: []
-            operationId: patchUser
             description: Update user information
             tags:
                 - user
@@ -263,16 +256,18 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/User"
+                            allOf:
+                                - $ref: "#/components/schemas/User"
+                                - $ref: "#/components/schemas/UserLogin"
             responses:
                 "200":
                     description: OK
         delete:
+            operationId: deleteUser
             security:
                 - oAuthPassword:
                       - update_user_info
                 - bearer: []
-            operationId: deleteUser
             description: Delete the specified user.
             tags:
                 - user
@@ -291,10 +286,37 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: "#/components/schemas/User"
+                            allOf:
+                                - $ref: "#/components/schemas/User"
+                                - $ref: "#/components/schemas/UserLogin"
             responses:
                 "200":
                     description: OK
+    /user/{userId}/rideHistory:
+        parameters:
+            - name: username
+              in: path
+              required: true
+              schema:
+                  type: string
+        get:
+            operationId: getHistory
+            description: Get the users ride history.
+            tags:
+                - user
+            security:
+                - oAuthPassword:
+                      - read_user_history
+                - bearer: []
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Ride"
     /rides/request/{estimateId}:
         parameters:
             - name: estimateId
@@ -302,9 +324,15 @@ paths:
               description: The ID of the estimate (from /estimates) that should be requested.
               schema:
                   type: string
+              required: true
         post:
+            operationId: requestRide
             tags:
                 - request
+            security:
+                - oAuthPassword:
+                      - request_rides
+                - bearer: []
             responses:
                 "200":
                     description: The ride request was successful
@@ -319,9 +347,15 @@ paths:
               description: The ID of the ride that is being referenced.
               schema:
                   type: string
+              required: true
         delete:
+            operationId: cancelRide
             tags:
                 - request
+            security:
+                - oAuthPassword:
+                      - request_rides
+                - bearer: []
             responses:
                 "200":
                     description: The ride request was successfully cancelled.
@@ -330,8 +364,13 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/PriceWithCurrency"
         get:
+            operationId: getRide
             tags:
                 - request
+            security:
+                - oAuthPassword:
+                      - read_user_history
+                - bearer: []
             responses:
                 "200":
                     description: The ride request update.
@@ -403,6 +442,16 @@ components:
                     type: string
                     format: uuid
                     description: The unique ID for this ride service, stays the same even if the name changes.
+                features:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - driverless
+                            - accept-cash
+                            - shared
+                            - professional
+                            - electric
                 security:
                     title: authorization_method
                     type: object
@@ -421,11 +470,27 @@ components:
                     format: email
                 name:
                     type: string
+                phone_number:
+                    type: string
+                    format: telephone
                 authorized_services:
                     type: array
                     items:
                         type: string
                         format: uuid
+                avatar:
+                    type: string
+                    format: uri
+        UserLogin:
+            description: User Login information
+            type: object
+            properties:
+                username:
+                    description: The users username
+                    type: string
+                password:
+                    description: The users password
+                    type: string
         Location:
             type: object
             properties:
@@ -497,6 +562,9 @@ components:
                     type: string
                 driverPronounciation:
                     type: string
+                avatar:
+                    type: string
+                    format: uri
         PriceWithCurrency:
             type: object
             properties:
@@ -521,6 +589,8 @@ components:
                         create_requests: Request rides for the user.
                         read_user_info: Read user information.
                         update_user_info: Update user information.
+                        read_user_history: Read user ride history.
+                        request_rides: Request rides on the users behalf.
         bearer:
             type: http
             scheme: bearer
