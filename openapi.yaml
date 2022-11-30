@@ -91,8 +91,11 @@ paths:
                   required: true
                   schema:
                       type: array
+                      minItems: 1
                       items:
+                          type: string
                           format: uuid
+                          description: The ID of the ride service.
             responses:
                 "200":
                     description: OK
