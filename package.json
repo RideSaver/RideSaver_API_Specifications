@@ -24,7 +24,7 @@
     },
     "scripts": {
         "prebuild": "openapi -i openapi.yaml -o build/ts -c axios",
-        "build": "cp redux-toolkit/emptyAPI.ts build/ts/ && npx @rtk-query/codegen-openapi ./redux-toolkit/openapi-config.ts",
+        "build": "cp redux-toolkit/emptyApi.ts build/ts/ && npx @rtk-query/codegen-openapi ./redux-toolkit/openapi-config.ts",
         "postbuild": "tsc"
     },
     "dependencies": {
