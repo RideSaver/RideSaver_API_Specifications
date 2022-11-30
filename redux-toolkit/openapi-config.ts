@@ -1,12 +1,12 @@
-import type { ConfigFile } from '@rtk-query/codegen-openapi'
+import type { ConfigFile } from "@rtk-query/codegen-openapi";
 
 const config: ConfigFile = {
-    schemaFile: '../openapi.yaml',
-    apiFile: './emptyApi.ts',
-    apiImport: 'emptySplitApi',
-    outputFile: '../build/ts/redux.ts',
-    exportName: 'ridesaverAPI',
+    schemaFile: "../openapi.yaml",
+    apiFile: "../build/ts/emptyAPI.ts",
+    apiImport: "emptySplitApi",
+    outputFile: "../build/ts/redux.ts",
+    exportName: "ridesaverAPI",
     hooks: true,
-}
+};
 
-export default config
+export default config;
