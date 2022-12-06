@@ -8,7 +8,9 @@
         "build/js",
         "openapi.yaml",
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "redux.js",
+        "redux.d.ts"
     ],
     "author": {
         "name": "Elias Schablowski",
