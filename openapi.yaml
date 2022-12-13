@@ -198,29 +198,6 @@ paths:
             responses:
                 "200":
                     description: OK
-    /user/login:
-        post:
-            operationId: login
-            description: Login User to the account.
-            tags:
-                - user
-            requestBody:
-                description: The login information.
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/UserLogin"
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: string
-                                description: The token to use for future requests
-                "401":
-                    description: Username or password is invalid.
     /user/info/{username}:
         parameters:
             - name: username
