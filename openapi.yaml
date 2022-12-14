@@ -4,6 +4,7 @@ info:
     version: "1.0"
 servers:
     - url: https://localhost:8443/api
+    - url: https://ride-saver.online/api/v1
 tags:
     - name: estimate
       description: Get estimates for rides
@@ -414,6 +415,40 @@ paths:
                         "application/json":
                             schema:
                                 $ref: "#/components/schemas/ServiceProvider"
+    /authentication/authenticate:
+        get:
+            operationId: authenticate
+            description: Authenticate user information for login.
+            tags:
+                - user
+            requestBody:
+                description: The information for the user wishing to login.
+                required: true
+                content:
+                    application/json:
+                        schema:
+                        allOf:
+                            - $ref: "#/components/schemas/UserLogin"
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: "#/components/schemas/User"
+                                    - type: object
+                                      properties:
+                                        jwttoken:
+                                            type: string
+                                            description: The (short lived) JWT token to use for subsequent requests.
+                                        refreshtoken:
+                                            type: string
+                                            description: The longer lived token to use for refreshing the JWT token.
+                "400":
+                    description: BAD REQUEST
+                "401":
+                    description: Unauthorized
 components:
     parameters:
         location:
