@@ -30,7 +30,7 @@
         "postbuild": "tsc"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "^1.9.0",
+        "@reduxjs/toolkit": "^1.9.1",
         "axios": "^1.2.1",
         "form-data": "^4.0.0",
         "openapi-types": "^12.1.0"
