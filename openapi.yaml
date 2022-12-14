@@ -427,8 +427,8 @@ paths:
                 content:
                     application/json:
                         schema:
-                        allOf:
-                            - $ref: "#/components/schemas/UserLogin"
+                            allOf:
+                                - $ref: "#/components/schemas/UserLogin"
             responses:
                 "200":
                     description: OK
