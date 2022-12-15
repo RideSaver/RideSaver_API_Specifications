@@ -575,13 +575,6 @@ components:
                     type: number
                     minimum: 0
                     description: The height of the given location, from the center of the planet, defaults to sea level.
-                planet:
-                    type: string
-                    default: earth
-                    pattern: "[^A-Z]"
-                    description: The name (lowercase) of the planet this location is on, currently only earth is supported and the default
-                    xml:
-                        attribute: true
             required:
                 - latitude
                 - longitude
