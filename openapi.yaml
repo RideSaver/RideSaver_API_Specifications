@@ -24,10 +24,6 @@ paths:
             operationId: getEstimates
             tags:
                 - estimate
-            security:
-                - oAuthPassword:
-                      - read_estimates
-                - bearer: []
             parameters:
                 - name: startPoint
                   in: query
@@ -82,10 +78,6 @@ paths:
     /estimates/refresh:
         get:
             operationId: refreshEstimates
-            security:
-                - oAuthPassword:
-                      - read_estimates
-                - bearer: []
             tags:
                 - estimate
             parameters:
@@ -138,10 +130,6 @@ paths:
                                     $ref: "#/components/schemas/RideService"
     /location/autocomplete:
         get:
-            security:
-                - oAuthPassword:
-                      - compute
-                - bearer: []
             tags:
                 - location
             description: Get the suggested locations based on partial user input
@@ -355,10 +343,6 @@ paths:
             operationId: requestRide
             tags:
                 - request
-            security:
-                - oAuthPassword:
-                      - request_rides
-                - bearer: []
             responses:
                 "200":
                     description: The ride request was successful
@@ -378,10 +362,6 @@ paths:
             operationId: cancelRide
             tags:
                 - request
-            security:
-                - oAuthPassword:
-                      - request_rides
-                - bearer: []
             responses:
                 "200":
                     description: The ride request was successfully cancelled.
