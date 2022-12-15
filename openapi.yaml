@@ -16,6 +16,8 @@ tags:
       description: Request rides for a user.
     - name: services
       description: Get general information on supported rideshare services.
+    - name: authenticate
+      description: Authenticate the client to act on behalf of a user
 paths:
     /estimates:
         get:
@@ -420,7 +422,7 @@ paths:
             operationId: authenticate
             description: Authenticate user information for login.
             tags:
-                - user
+                - authenticate
             requestBody:
                 description: The information for the user wishing to login.
                 required: true
