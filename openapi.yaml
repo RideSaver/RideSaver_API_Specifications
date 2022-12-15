@@ -418,7 +418,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ServiceProvider"
     /authentication/authenticate:
-        get:
+        post:
             operationId: authenticate
             description: Authenticate user information for login.
             tags:
