@@ -561,7 +561,8 @@ components:
                     type: string
                 phone_number:
                     type: string
-                    format: '^+\d+ \d{3}-\d{3}-\d{4}$'
+                    format: '^\+\d+ \d{3}-\d{3}-\d{4}$'
+                    example: +1 555-555-5555
                 authorized_services:
                     type: array
                     items:
