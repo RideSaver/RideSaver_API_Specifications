@@ -24,6 +24,11 @@ paths:
             operationId: getEstimates
             tags:
                 - estimate
+            security:
+                - oAuthPassword:
+                      - read_estimates
+                - apiKey: []
+                - {}
             parameters:
                 - name: startPoint
                   in: query
@@ -78,6 +83,10 @@ paths:
     /estimates/refresh:
         get:
             operationId: refreshEstimates
+            security:
+                - oAuthPassword:
+                      - read_estimates
+                - apiKey: []
             tags:
                 - estimate
             parameters:
@@ -130,6 +139,10 @@ paths:
                                     $ref: "#/components/schemas/RideService"
     /location/autocomplete:
         get:
+            security:
+                - oAuthPassword:
+                      - compute
+                - apiKey: []
             tags:
                 - location
             description: Get the suggested locations based on partial user input
@@ -201,7 +214,7 @@ paths:
             security:
                 - oAuthPassword:
                       - read_user_info
-                - bearer: []
+                - apiKey: []
             description: Read user information, i.e.
             tags:
                 - user
@@ -217,7 +230,7 @@ paths:
             security:
                 - oAuthPassword:
                       - update_user_info
-                - bearer: []
+                - apiKey: []
             description: Update user information
             tags:
                 - user
@@ -238,7 +251,7 @@ paths:
             security:
                 - oAuthPassword:
                       - update_user_info
-                - bearer: []
+                - apiKey: []
             description: Delete the specified user.
             tags:
                 - user
@@ -278,7 +291,7 @@ paths:
             security:
                 - oAuthPassword:
                       - read_user_history
-                - bearer: []
+                - apiKey: []
             responses:
                 "200":
                     description: OK
@@ -300,7 +313,7 @@ paths:
             security:
                 - oAuthPassword:
                       - read_user_info
-                - bearer: []
+                - apiKey: []
             description: Read user information, i.e.
             tags:
                 - user
@@ -317,7 +330,7 @@ paths:
             security:
                 - oAuthPassword:
                       - update_user_info
-                - bearer: []
+                - apiKey: []
             description: Delete the specified user.
             tags:
                 - user
@@ -343,6 +356,10 @@ paths:
             operationId: requestRide
             tags:
                 - request
+            security:
+                - oAuthPassword:
+                      - request_rides
+                - apiKey: []
             responses:
                 "200":
                     description: The ride request was successful
@@ -362,6 +379,10 @@ paths:
             operationId: cancelRide
             tags:
                 - request
+            security:
+                - oAuthPassword:
+                      - request_rides
+                - apiKey: []
             responses:
                 "200":
                     description: The ride request was successfully cancelled.
@@ -376,7 +397,7 @@ paths:
             security:
                 - oAuthPassword:
                       - read_user_history
-                - bearer: []
+                - apiKey: []
             responses:
                 "200":
                     description: The ride request update.
@@ -575,6 +596,13 @@ components:
                     type: number
                     minimum: 0
                     description: The height of the given location, from the center of the planet, defaults to sea level.
+                planet:
+                    type: string
+                    default: earth
+                    # pattern: "[^A-Z]"
+                    description: The name (lowercase) of the planet this location is on, currently only earth is supported and the default
+                    xml:
+                        attribute: true
             required:
                 - latitude
                 - longitude
@@ -651,8 +679,8 @@ components:
                         update_user_info: Update user information.
                         read_user_history: Read user ride history.
                         request_rides: Request rides on the users behalf.
-        bearer:
-            type: http
-            scheme: bearer
-            bearerFormat: JWT
+        apiKey:
+            type: apiKey
+            in: header
+            name: token
             description: Used for the App and base login ONLY, cannot be granted to anyone else.
