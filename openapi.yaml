@@ -586,7 +586,7 @@ components:
           type: string
         phonenumber:
           type: string
-          format: '^\+\d+ \d{3}-\d{3}-\d{4}$'
+          pattern: '^\+\d+ \d{3}-\d{3}-\d{4}$'
           example: +1 555-555-5555
           x-faker:
             phone.phoneNumber:
