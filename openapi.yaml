@@ -1,686 +1,723 @@
 openapi: "3.0.2"
 info:
-    title: RideSaver API
-    version: "1.0"
+  title: RideSaver API
+  version: "1.0"
 servers:
-    - url: https://localhost:8443/api
-    - url: https://ride-saver.online/api/v1
+  - url: https://localhost:8443/api
+  - url: https://ride-saver.online/api/v1
 tags:
-    - name: estimate
-      description: Get estimates for rides
-    - name: location
-      description: Get location information (geocoding and autocomplete)
-    - name: user
-      description: Get user information.
-    - name: request
-      description: Request rides for a user.
-    - name: services
-      description: Get general information on supported rideshare services.
-    - name: authenticate
-      description: Authenticate the client to act on behalf of a user
+  - name: estimate
+    description: Get estimates for rides
+  - name: location
+    description: Get location information (geocoding and autocomplete)
+  - name: user
+    description: Get user information.
+  - name: request
+    description: Request rides for a user.
+  - name: services
+    description: Get general information on supported rideshare services.
+  - name: authenticate
+    description: Authenticate the client to act on behalf of a user
 paths:
-    /estimates:
-        get:
-            operationId: getEstimates
-            tags:
-                - estimate
-            security:
-                - oAuthPassword:
-                      - read_estimates
-                - apiKey: []
-                - {}
-            parameters:
-                - name: startPoint
-                  in: query
-                  required: true
-                  style: form
-                  explode: false
-                  schema:
-                      $ref: "#/components/schemas/Location"
-                - name: endPoint
-                  in: query
-                  style: form
-                  explode: false
-                  required: true
-                  schema:
-                      $ref: "#/components/schemas/Location"
-                - name: services
-                  in: query
-                  required: false
-                  description: Only query these services (default is all supported services).
-                  schema:
-                      type: array
-                      minItems: 1
-                      items:
-                          type: string
-                          format: uuid
-                          description: The ID of the ride service.
-                - name: seats
-                  in: query
-                  required: false
-                  schema:
-                      type: integer
-                      minimum: 0
-                      description: The number of seats required for the trip to estimate.
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: "#/components/schemas/Estimate"
-                        application/xml:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: "#/components/schemas/Estimate"
-                                xml:
-                                    name: estimate
-                "401":
-                    description: The user does not have access to any ride share services.
-    /estimates/refresh:
-        get:
-            operationId: refreshEstimates
-            security:
-                - oAuthPassword:
-                      - read_estimates
-                - apiKey: []
-            tags:
-                - estimate
-            parameters:
-                - name: ids
-                  in: query
-                  required: true
-                  schema:
-                      type: array
-                      minItems: 1
-                      items:
-                          type: string
-                          format: uuid
-                          description: The ID of the ride service.
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: "#/components/schemas/Estimate"
-                        application/xml:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: "#/components/schemas/Estimate"
-                                xml:
-                                    name: estimate
-                "401":
-                    description: The user does not have access to any ride share services from the estimates anymore or the user has no access to the estimates.
-                "404":
-                    description: The requested estimate does not exist.
-    /services:
-        get:
-            tags:
-                - services
-            description: Get the supported services.
-            operationId: getServices
-            parameters:
-                - $ref: "#/components/parameters/location"
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: "#/components/schemas/RideService"
-    /location/autocomplete:
-        get:
-            security:
-                - oAuthPassword:
-                      - compute
-                - apiKey: []
-            tags:
-                - location
-            description: Get the suggested locations based on partial user input
-            operationId: autocomplete
-            parameters:
-                - $ref: "#/components/parameters/location"
-                - name: maxResponses
-                  in: query
-                  required: false
-                  schema:
-                      type: integer
-                      minimum: 1
-                      maximum: 50
-                      default: 20
-                  description: The numbers of items to return.
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    type: string
-                        application/xml:
-                            schema:
-                                type: array
-                                items:
-                                    type: string
-    /user/authorize/oauth/{userId}/{serviceId}:
-        parameters:
-            - name: serviceId
-              description: The ID of the service to request authorization from
-              in: path
+  /estimates:
+    get:
+      operationId: getEstimates
+      tags:
+        - estimate
+      security:
+        - bearerAuth: []
+        - apiKey: []
+        - {}
+      parameters:
+        - name: startPoint
+          in: query
+          required: true
+          style: form
+          explode: false
+          schema:
+            $ref: "#/components/schemas/Location"
+        - name: endPoint
+          in: query
+          style: form
+          explode: false
+          required: true
+          schema:
+            $ref: "#/components/schemas/Location"
+        - name: services
+          in: query
+          required: false
+          description: Only query these services (default is all supported services).
+          schema:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              format: uuid
+              description: The ID of the ride service.
+        - name: seats
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            description: The number of seats required for the trip to estimate.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
               schema:
-                  type: string
-                  format: uuid
-              required: true
-            - name: userId
-              description: The ID of the user that requested the authorization
-              in: path
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estimate"
+            application/xml:
               schema:
-                  type: string
-                  format: uuid
-              required: true
-        get:
-            operationId: autorizeServiceEndpoint
-            description: Authorization endpoint an RideShare service for a user.
-            parameters:
-                - name: code
-                  in: query
-                  schema:
-                      type: string
-                  required: true
-            tags:
-                - user
-            responses:
-                "200":
-                    description: OK
-    /user/info/{username}:
-        parameters:
-            - name: username
-              in: path
-              required: true
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estimate"
+                xml:
+                  name: estimate
+        "401":
+          description: The user does not have access to any ride share services.
+  /estimates/refresh:
+    get:
+      operationId: refreshEstimates
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      tags:
+        - estimate
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          schema:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              format: uuid
+              description: The ID of the ride service.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
               schema:
-                  type: string
-        get:
-            operationId: getUser
-            security:
-                - oAuthPassword:
-                      - read_user_info
-                - apiKey: []
-            description: Read user information, i.e.
-            tags:
-                - user
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/User"
-        patch:
-            operationId: patchUser
-            security:
-                - oAuthPassword:
-                      - update_user_info
-                - apiKey: []
-            description: Update user information
-            tags:
-                - user
-            requestBody:
-                description: The information for the user wishing to register.
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            allOf:
-                                - $ref: "#/components/schemas/User"
-                                - $ref: "#/components/schemas/UserLogin"
-            responses:
-                "200":
-                    description: OK
-        delete:
-            operationId: deleteUser
-            security:
-                - oAuthPassword:
-                      - update_user_info
-                - apiKey: []
-            description: Delete the specified user.
-            tags:
-                - user
-            responses:
-                "200":
-                    description: OK
-    /user/signup:
-        post:
-            operationId: signUp
-            description: Sign Up for RideSaver.
-            tags:
-                - user
-            requestBody:
-                description: The information for the user wishing to register.
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            allOf:
-                                - $ref: "#/components/schemas/User"
-                                - $ref: "#/components/schemas/UserLogin"
-            responses:
-                "200":
-                    description: OK
-    /user/{username}/rideHistory:
-        parameters:
-            - name: username
-              in: path
-              required: true
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estimate"
+            application/xml:
               schema:
-                  type: string
-        get:
-            operationId: getHistory
-            description: Get the users ride history.
-            tags:
-                - user
-            security:
-                - oAuthPassword:
-                      - read_user_history
-                - apiKey: []
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    $ref: "#/components/schemas/Ride"
-    /user/{username}/avatar:
-        parameters:
-            - name: username
-              in: path
-              required: true
+                type: array
+                items:
+                  $ref: "#/components/schemas/Estimate"
+                xml:
+                  name: estimate
+        "401":
+          description: The user does not have access to any ride share services from the estimates anymore or the user has no access to the estimates.
+        "404":
+          description: The requested estimate does not exist.
+  /services:
+    get:
+      tags:
+        - services
+      description: Get the supported services.
+      operationId: getServices
+      parameters:
+        - $ref: "#/components/parameters/location"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
               schema:
-                  type: string
-        get:
-            operationId: getAvatar
-            security:
-                - oAuthPassword:
-                      - read_user_info
-                - apiKey: []
-            description: Read user information, i.e.
-            tags:
-                - user
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        image/png:
-                            schema:
-                                type: string
-                                format: binary
-        post:
-            operationId: updateAvatar
-            security:
-                - oAuthPassword:
-                      - update_user_info
-                - apiKey: []
-            description: Delete the specified user.
-            tags:
-                - user
-            requestBody:
-                content:
-                    image/png:
-                        schema:
-                            type: string
-                            format: binary
-            responses:
-                "200":
-                    description: OK
-
-    /rides/request/{estimateId}:
-        parameters:
-            - name: estimateId
-              in: path
-              description: The ID of the estimate (from /estimates) that should be requested.
+                type: array
+                items:
+                  $ref: "#/components/schemas/RideService"
+  /location/autocomplete:
+    get:
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      tags:
+        - location
+      description: Get the suggested locations based on partial user input
+      operationId: autocomplete
+      parameters:
+        - $ref: "#/components/parameters/location"
+        - name: maxResponses
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+          description: The numbers of items to return.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
               schema:
+                type: array
+                items:
                   type: string
-              required: true
-        post:
-            operationId: requestRide
-            tags:
-                - request
-            security:
-                - oAuthPassword:
-                      - request_rides
-                - apiKey: []
-            responses:
-                "200":
-                    description: The ride request was successful
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Ride"
-    /rides/{rideId}:
-        parameters:
-            - name: rideId
-              in: path
-              description: The ID of the ride that is being referenced.
+            application/xml:
               schema:
+                type: array
+                items:
                   type: string
-              required: true
-        delete:
-            operationId: cancelRide
-            tags:
-                - request
-            security:
-                - oAuthPassword:
-                      - request_rides
-                - apiKey: []
-            responses:
-                "200":
-                    description: The ride request was successfully cancelled.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/PriceWithCurrency"
-        get:
-            operationId: getRide
-            tags:
-                - request
-            security:
-                - oAuthPassword:
-                      - read_user_history
-                - apiKey: []
-            responses:
-                "200":
-                    description: The ride request update.
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Ride"
-    /providers:
-        get:
-            operationId: getProviders
-            description: Get all of the supported service providers.
-            tags:
-                - services
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        "application/json":
-                            schema:
-                                $ref: "#/components/schemas/ServiceProvider"
-    /authentication/authenticate:
-        post:
-            operationId: authenticate
-            description: Authenticate user information for login.
-            tags:
-                - authenticate
-            requestBody:
-                description: The information for the user wishing to login.
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/UserLogin"
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                allOf:
-                                    - $ref: "#/components/schemas/User"
-                                    - type: object
-                                      properties:
-                                        jwttoken:
-                                            type: string
-                                            description: The (short lived) JWT token to use for subsequent requests.
-                                        refreshtoken:
-                                            type: string
-                                            description: The longer lived token to use for refreshing the JWT token.
-                "400":
-                    description: BAD REQUEST
-                "401":
-                    description: Unauthorized
-components:
+  /user/authorize/oauth/{userId}/{serviceId}:
     parameters:
-        location:
-            name: location
-            in: query
-            explode: true
-            required: false
-            description: The location at which services are supported (usually by country/city range), leaving this empty returns all supported services worldwide.
+      - name: serviceId
+        description: The ID of the service to request authorization from
+        in: path
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - name: userId
+        description: The ID of the user that requested the authorization
+        in: path
+        schema:
+          type: string
+          format: uuid
+        required: true
+    get:
+      operationId: autorizeServiceEndpoint
+      description: Authorization endpoint an RideShare service for a user.
+      parameters:
+        - name: code
+          in: query
+          schema:
+            type: string
+          required: true
+      tags:
+        - user
+      responses:
+        "200":
+          description: OK
+  /user/info/{username}:
+    parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: getUser
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      description: Read user information, i.e.
+      tags:
+        - user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    patch:
+      operationId: patchUser
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      description: Update user information
+      tags:
+        - user
+      requestBody:
+        description: The information for the user wishing to register.
+        required: true
+        content:
+          application/json:
             schema:
-                $ref: "#/components/schemas/Location"
-    schemas:
-        Estimate:
-            type: object
-            properties:
-                id:
-                    type: string
-                    format: uuid
-                    description: The unique ID of this estimate, used to track this estimate for ride requests and estimate refreshes.
-                    xml:
-                        attribute: true
-                invalidTime:
-                    type: string
-                    format: date-time
-                    description: The time at which the validity of this estimate expires (and should be refreshed before)
-                price:
-                    $ref: "#/components/schemas/PriceWithCurrency"
-                distance:
-                    type: integer
-                    minimum: 0
-                    description: The estimated distance for this ride, in kilometers.
-                waypoints:
-                    type: array
-                    items:
-                        $ref: "#/components/schemas/Location"
-                    description: The waypoints of this estimate, used to display a route to the user, first element should be the start point and last should be the end point.
-                displayName:
-                    type: string
-                    description: The name of this service to display.
-                seats:
-                    type: integer
-                    minimum: 0
-                    description: The number of seats available for this estimate.
-                requestURL:
-                    type: string
-                    format: uri
-            required:
-                - id
-                - invalidTime
-                - price
-                - displayName
-                - seats
-                - requestURL
-        RideService:
-            type: object
-            properties:
-                displayName:
-                    type: string
-                    description: The name to display for this service.
-                    example: uberPOOL
-                id:
-                    type: string
-                    format: uuid
-                    description: The unique ID for this ride service, stays the same even if the name changes.
-                features:
-                    type: array
-                    items:
-                        type: string
-                        enum:
-                            - driverless
-                            - accept-cash
-                            - shared
-                            - professional
-                            - electric
-                provider:
-                    description: The provider of this service, references ServiceProvider
-                    type: string
-                    format: uuid
-        ServiceProvider:
-            type: object
-            properties:
-                displayName:
-                    example: uber
-                    type: string
-                    description: The name to display for this service provider.
-                id:
-                    type: string
-                    format: uuid
-                    description: The unique ID for this ride service provider, stays the same even if the name changes.
-                security:
-                    title: authorization_method
-                    type: object
+              allOf:
+                - $ref: "#/components/schemas/User"
+                - $ref: "#/components/schemas/UserLogin"
+      responses:
+        "200":
+          description: OK
+    delete:
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      description: Delete the specified user.
+      tags:
+        - user
+      responses:
+        "200":
+          description: OK
+  /user/signup:
+    post:
+      operationId: signUp
+      description: Sign Up for RideSaver.
+      tags:
+        - user
+      requestBody:
+        description: The information for the user wishing to register.
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/User"
+                - $ref: "#/components/schemas/UserLogin"
+      responses:
+        "200":
+          description: OK
+  /user/{username}/rideHistory:
+    parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: getHistory
+      description: Get the users ride history.
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ride"
+  /user/{username}/avatar:
+    parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: getAvatar
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      description: Read user information, i.e.
+      tags:
+        - user
+      responses:
+        "200":
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+    post:
+      operationId: updateAvatar
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      description: Delete the specified user.
+      tags:
+        - user
+      requestBody:
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: OK
+
+  /rides/request/{estimateId}:
+    parameters:
+      - name: estimateId
+        in: path
+        description: The ID of the estimate (from /estimates) that should be requested.
+        schema:
+          type: string
+        required: true
+    post:
+      operationId: requestRide
+      tags:
+        - request
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      responses:
+        "200":
+          description: The ride request was successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ride"
+  /rides/{rideId}:
+    parameters:
+      - name: rideId
+        in: path
+        description: The ID of the ride that is being referenced.
+        schema:
+          type: string
+        required: true
+    delete:
+      operationId: cancelRide
+      tags:
+        - request
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      responses:
+        "200":
+          description: The ride request was successfully cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PriceWithCurrency"
+    get:
+      operationId: getRide
+      tags:
+        - request
+      security:
+        - bearerAuth: []
+        - apiKey: []
+      responses:
+        "200":
+          description: The ride request update.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ride"
+  /providers:
+    get:
+      operationId: getProviders
+      description: Get all of the supported service providers.
+      tags:
+        - services
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ServiceProvider"
+  /authentication/authenticate:
+    post:
+      operationId: authenticate
+      description: Authenticate user information for login.
+      tags:
+        - authenticate
+      requestBody:
+        description: The information for the user wishing to login.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/User"
+                  - type: object
                     properties:
-                        authorization:
-                            type: string
-                            enum:
-                                - oauth
-                                - none
-                        authorization_url:
-                            description: The OAuth2.0 authorization URL.
-                            type: string
-        User:
-            description: User information object.
-            type: object
-            properties:
-                email:
-                    type: string
-                    format: email
-                name:
-                    type: string
-                phonenumber:
-                    type: string
-                    format: '^\+\d+ \d{3}-\d{3}-\d{4}$'
-                    example: +1 555-555-5555
-                authorized_services:
-                    type: array
-                    items:
+                      jwttoken:
                         type: string
-                        format: uuid
-        UserLogin:
-            description: User Login information
-            type: object
-            properties:
-                username:
-                    description: The users username
-                    type: string
-                password:
-                    description: The users password
-                    type: string
-        Location:
-            type: object
-            properties:
-                latitude:
-                    type: number
-                    minimum: -180
-                    maximum: 180
-                    description: The latitude of this location, - is south, + is north
-                longitude:
-                    type: number
-                    minimum: -180
-                    maximum: 180
-                    description: The longitude of this location, - is west, + is east
-                height:
-                    type: number
-                    minimum: 0
-                    description: The height of the given location, from the center of the planet, defaults to sea level.
-                planet:
-                    type: string
-                    default: earth
-                    # pattern: "[^A-Z]"
-                    description: The name (lowercase) of the planet this location is on, currently only earth is supported and the default
-                    xml:
-                        attribute: true
-            required:
-                - latitude
-                - longitude
-        Ride:
-            type: object
-            properties:
-                stage:
-                    type: string
-                    enum:
-                        - scheduled
-                        - pending
-                        - accepted
-                        - cancelled
-                        - completed
-                id:
-                    type: string
-                    format: uuid
-                    description: The UUID that is used to reference this specific ride request.
-                estimatedTimeOfArrival:
-                    type: string
-                    format: date-time
-                    description: The Estimated time of arrival for the driver to the rider or to the destination.
-                riderOnBoard:
-                    type: boolean
-                    description: Whether the rider is in the car.
-                price:
-                    $ref: "#/components/schemas/PriceWithCurrency"
-                driver:
-                    $ref: "#/components/schemas/Driver"
-                    description: The driver and car information that accepted the ride.
-                driverLocation:
-                    $ref: "#/components/schemas/Location"
-                    description: The current location of the driver (or car).
-        Driver:
-            type: object
-            properties:
-                displayName:
-                    type: string
-                licensePlate:
-                    type: string
-                carPicture:
-                    type: string
-                    format: uri
-                carDescription:
-                    type: string
-                driverPronounciation:
-                    type: string
-                avatar:
-                    type: string
-                    format: uri
-        PriceWithCurrency:
-            type: object
-            properties:
-                price:
-                    type: number
-                    description: The cancellation fee of the ride.
-                currency:
-                    type: string
-                    pattern: \s{3}
-                    description: The ISO 4217 currency code for the currency that the cancellation fee is in.
-    securitySchemes:
-        oAuthPassword:
-            type: oauth2
-            description: This API uses OAuth 2 with the implicit grant flow. [More info](https://api.example.com/docs/auth)
-            flows:
-                authorizationCode:
-                    tokenUrl: /oauth2/token
-                    authorizationUrl: /oauth2/login
-                    scopes:
-                        compute: Allow compute power on the server (used to stop abuse of compute intensive operations for other services).
-                        read_estimates: Read estimates for the user.
-                        create_requests: Request rides for the user.
-                        read_user_info: Read user information.
-                        update_user_info: Update user information.
-                        read_user_history: Read user ride history.
-                        request_rides: Request rides on the users behalf.
-        apiKey:
-            type: apiKey
-            in: header
-            name: token
-            description: Used for the App and base login ONLY, cannot be granted to anyone else.
+                        description: The (short lived) JWT token to use for subsequent requests.
+                      refreshtoken:
+                        type: string
+                        description: The longer lived token to use for refreshing the JWT token.
+                    required:
+                      - jwttoken
+                      - refreshtoken
+        "400":
+          description: BAD REQUEST
+        "401":
+          description: Unauthorized
+components:
+  parameters:
+    location:
+      name: location
+      in: query
+      explode: true
+      required: false
+      description: The location at which services are supported (usually by country/city range), leaving this empty returns all supported services worldwide.
+      schema:
+        $ref: "#/components/schemas/Location"
+  schemas:
+    Estimate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique ID of this estimate, used to track this estimate for ride requests and estimate refreshes.
+          xml:
+            attribute: true
+        invalidTime:
+          type: string
+          format: date-time
+          description: The time at which the validity of this estimate expires (and should be refreshed before)
+          x-faker: date.soon
+        price:
+          $ref: "#/components/schemas/PriceWithCurrency"
+        distance:
+          type: integer
+          minimum: 0
+          description: The estimated distance for this ride, in kilometers.
+        waypoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Location"
+          description: The waypoints of this estimate, used to display a route to the user, first element should be the start point and last should be the end point.
+        displayName:
+          type: string
+          description: The name of this service to display.
+          x-chance:
+            pickone:
+              - uberPOOL
+              - uberXL
+              - uberBLACK
+              - lyft
+              - lyftPOOL
+        seats:
+          type: integer
+          minimum: 0
+          description: The number of seats available for this estimate.
+        requestURL:
+          type: string
+          format: uri
+          x-chance:
+            url:
+              domain: mock.uber
+      required:
+        - id
+        - invalidTime
+        - price
+        - displayName
+        - seats
+        - requestURL
+    RideService:
+      type: object
+      properties:
+        displayName:
+          type: string
+          description: The name to display for this service.
+          example: uberPOOL
+          x-chance:
+            pickone:
+              - uberPOOL
+              - uberXL
+              - uberBLACK
+              - lyft
+              - lyftPOOL
+        id:
+          type: string
+          format: uuid
+          description: The unique ID for this ride service, stays the same even if the name changes.
+        features:
+          type: array
+          items:
+            type: string
+            enum:
+              - driverless
+              - accept-cash
+              - shared
+              - professional
+              - electric
+        provider:
+          description: The provider of this service, references ServiceProvider
+          type: string
+          format: uuid
+      required:
+        - displayName
+        - id
+        - features
+        - provider
+    ServiceProvider:
+      type: object
+      properties:
+        displayName:
+          example: uber
+          type: string
+          description: The name to display for this service provider.
+          x-chance:
+            pickone:
+              - Uber
+              - Lyft
+        id:
+          type: string
+          format: uuid
+          description: The unique ID for this ride service provider, stays the same even if the name changes.
+        security:
+          title: authorization_method
+          type: object
+          properties:
+            authorization:
+              type: string
+              enum:
+                - oauth
+                - none
+            authorization_url:
+              description: The OAuth2.0 authorization URL.
+              type: string
+          required:
+            - authorization
+      required:
+        - displayName
+        - id
+        - security
+    User:
+      description: User information object.
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        phonenumber:
+          type: string
+          format: '^\+\d+ \d{3}-\d{3}-\d{4}$'
+          example: +1 555-555-5555
+          x-faker:
+            phone.phoneNumber:
+              - "+1 ###-###-####"
+        authorized_services:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+        - email
+        - name
+        - phonenumber
+        - authorized_services
+    UserLogin:
+      description: User Login information
+      type: object
+      properties:
+        username:
+          description: The users username
+          type: string
+          x-faker: internet.userName
+        password:
+          description: The users password
+          type: string
+          x-faker: internet.password
+      required:
+        - username
+        - password
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          minimum: -180
+          maximum: 180
+          description: The latitude of this location, - is south, + is north
+          x-faker: address.latitude
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+          description: The longitude of this location, - is west, + is east
+          x-faker: address.longitude
+        height:
+          type: number
+          minimum: 0
+          description: The height of the given location, from the center of the planet, defaults to sea level.
+        planet:
+          type: string
+          default: earth
+          # pattern: "[^A-Z]"
+          description: The name (lowercase) of the planet this location is on, currently only earth is supported and the default
+          xml:
+            attribute: true
+      required:
+        - latitude
+        - longitude
+    Ride:
+      type: object
+      properties:
+        stage:
+          type: string
+          enum:
+            - scheduled
+            - pending
+            - accepted
+            - cancelled
+            - completed
+        id:
+          type: string
+          format: uuid
+          description: The UUID that is used to reference this specific ride request.
+        estimatedTimeOfArrival:
+          type: string
+          format: date-time
+          description: The Estimated time of arrival for the driver to the rider or to the destination.
+          x-faker: date.soon
+        riderOnBoard:
+          type: boolean
+          description: Whether the rider is in the car.
+        price:
+          $ref: "#/components/schemas/PriceWithCurrency"
+        driver:
+          $ref: "#/components/schemas/Driver"
+          description: The driver and car information that accepted the ride.
+        driverLocation:
+          $ref: "#/components/schemas/Location"
+          description: The current location of the driver (or car).
+    Driver:
+      type: object
+      properties:
+        displayName:
+          type: string
+          x-faker: name.fullName
+        licensePlate:
+          type: string
+          x-faker: vehicle.vrm
+        carPicture:
+          type: string
+          format: uri
+          x-faker: image.transport
+        carDescription:
+          type: string
+          x-faker: vehicle.vehicle
+        driverPronounciation:
+          type: string
+          x-faker: name.fullName
+        avatar:
+          type: string
+          format: uri
+          x-faker: image.avatar
+    PriceWithCurrency:
+      type: object
+      properties:
+        price:
+          type: number
+          description: The cancellation fee of the ride.
+          x-faker: finance.amount
+        currency:
+          type: string
+          pattern: \s{3}
+          description: The ISO 4217 currency code for the currency that the cancellation fee is in.
+          x-faker: finance.currencyCode
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: token
+      description: Used for the App and base login ONLY, cannot be granted to anyone else.
