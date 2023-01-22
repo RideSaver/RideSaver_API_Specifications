@@ -43,9 +43,20 @@
         "ts-node": "^10.9.1",
         "typescript": "^4.9.4"
     },
-    "optionalDependencies": {
+    "peerDependencies": {
         "react-dom": "^18.2.0",
         "react-redux": "^8.0.5",
         "redux": "^4.2.0"
+    },
+    "peerDependenciesMeta": {
+        "react-dom": {
+            "optional": true
+        },
+        "react-redux": {
+            "optional": true
+        },
+        "redux": {
+            "optional": true
+        }
     }
 }
