@@ -9,7 +9,7 @@ export const emptySplitApi = createApi({
         prepareHeaders(headers, api) {
             const token = (api.getState() as any).auth.token;
             // If we have a token set in state, let's assume that we should be passing it.
-            if (token && !headers.has("authorization")) {
+            if (token && !headers.has("Authorization")) {
                 headers.set("Authorization", `Bearer ${token}`);
             }
             if (token && !headers.has("token")) {
