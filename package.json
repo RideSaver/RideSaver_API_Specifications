@@ -25,7 +25,8 @@
         "registry": "https://npm.pkg.github.com"
     },
     "scripts": {
-        "build": "cp redux-toolkit/*.ts build/ts/ && npx @rtk-query/codegen-openapi ./redux-toolkit/openapi-config.ts",
+        "prebuild": "mkdir build/ts && cp redux-toolkit/*.ts build/ts/",
+        "build": "npx @rtk-query/codegen-openapi ./redux-toolkit/openapi-config.ts",
         "postbuild": "tsc"
     },
     "dependencies": {
