@@ -30,7 +30,7 @@
         "postbuild": "tsc"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "^1.9.1"
+        "@reduxjs/toolkit": "^1.9.5"
     },
     "devDependencies": {
         "@jest/globals": "^29.3.1",
